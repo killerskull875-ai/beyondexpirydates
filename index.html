@@ -406,7 +406,7 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
   <!--
   <div class="hero-ring" style="width:700px;height:700px;top:-280px;right:-280px;"></div>
   <div class="hero-ring" style="width:350px;height:350px;bottom:60px;left:-140px;"></div>
-  -->
+  -->                                                                                                                                                                                                                              
   <div>
     <div class="eyebrow">Know exactly what you're eating</div>
     <h1>Beyond<br><em>expiry dates</em></h1>
@@ -852,7 +852,7 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
     <div class="qr-info">
       <h3>Share Beyond Expiry</h3>
       <p>Scan this code to open the app on any device instantly. Share it with friends, family, or anyone curious about smarter food freshness.</p>
-      <div class="url-chip" id="siteUrl">beyondexpiry.app</div>
+      <div class="url-chip" id="siteUrl">beyondexpirydates-gamma.vercel.app</div>
       <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
         <button class="share-btn" onclick="downloadQR()">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -1390,19 +1390,20 @@ function launchConfetti() {
     }, i * 18);
   }
 }
+/* —— QR CODE —— */
 
 new QRCode(document.getElementById("qrCode"), {
-    text: "https://beyondexpirydates.netlify.app",
+    text: "https://beyondexpirydates-gamma.vercel.app",
     width: 180,
     height: 180
 });
 
 function downloadQR() {
   const canvas = document.getElementById('qrCanvas');
-  const a = document.createElement('a'); a.download = 'beyond-expiry-qr.png'; a.href = canvas.toDataURL(); a.click();
+  const a = document.createElement('a'); a.download = 'beyond-expiry-dates-qr.png'; a.href = canvas.toDataURL(); a.click();
 }
 function copyUrl(btn) {
-  navigator.clipboard.writeText(window.location.href).then(() => { btn.textContent = '✓ Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy URL'; btn.classList.remove('copied'); }, 2000); }).catch(()=>{});
+  navigator.clipboard.writeText("https://beyondexpirydates-gamma.vercel.app").then(() => { btn.textContent = '✓ Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy URL'; btn.classList.remove('copied'); }, 2000); }).catch(()=>{});
 }
 </script>
 </body>
