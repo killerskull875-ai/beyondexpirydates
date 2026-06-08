@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Beyond Expiry Dates - Smart Food Freshness Monitoring</title>
-<link rel="icon" type="image/svg+xml" href="/logo.svg?v=2">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
 <meta name="description" content="Beyond Expiry - know exactly how fresh your food is, in real time. Chemical sensors and NFC technology built into every package.">
 <meta name="theme-color" content="#0d0a05">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -22,6 +22,20 @@
   --text:#f5e8c8; --muted:rgba(245,232,200,0.45); --faint:rgba(245,232,200,0.18);
   --border:rgba(245,232,200,0.08); --border2:rgba(245,232,200,0.15);
 }
+/* Desktop: tighten spacing so hero looks proportional on large screens */
+@media(min-width:1400px) {
+  .hero{padding:100px 80px 72px;gap:80px;}
+  .hero h1{font-size:clamp(52px,4vw,76px);}
+  .sec,.fw,.tech,.impact,.demo-sec{padding:80px 80px;}
+  .how,.scanner-sec{padding:80px 80px;}
+  .calc-sec,.compare-sec,.vision-sec,.showcase-sec,.timeline-sec{padding:80px 80px;}
+  .qr-sec,.history-sec{padding:56px 80px;}
+}
+@media(min-width:1800px) {
+  .hero{max-width:1600px;margin:0 auto;}
+  .sec,.fw,.tech,.impact,.demo-sec,.how,.scanner-sec,.calc-sec,.compare-sec,.vision-sec,.showcase-sec,.timeline-sec,.qr-sec,.history-sec{max-width:1600px;margin-left:auto;margin-right:auto;}
+}
+
 /* SPLASH SCREEN */
 #splash{position:fixed;inset:0;z-index:10000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity .6s ease,transform .6s ease;}
 #splash.hide{opacity:0;transform:scale(1.04);pointer-events:none;}
@@ -42,11 +56,12 @@ html{scroll-behavior:smooth;}
 body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='24' viewBox='0 0 20 24'%3E%3Cpath d='M2 1 L2 20 L7 15 L10.5 22 L13.5 20.5 L10 13.5 L17 13.5 Z' fill='%23f5c842' stroke='%230d0a05' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 2 1, auto;}
 
 /* SCROLLBAR */
-::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:var(--bg2);}
 ::-webkit-scrollbar-thumb{background:rgba(245,200,66,.35);border-radius:3px;}
 ::-webkit-scrollbar-thumb:hover{background:rgba(245,200,66,.6);}
-html{scrollbar-width:thin;scrollbar-color:rgba(245,200,66,.35) var(--bg2);}
+html{scrollbar-width:thin;scrollbar-color:rgba(245,200,66,.35) var(--bg2);overflow-x: auto;}
+
 
 /* CURSOR */
 #cur{display:none;}
@@ -352,12 +367,438 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
   .ind-grid{grid-template-columns:repeat(3,1fr);}
   .tech-grid{grid-template-columns:1fr;}.tc:first-child,.tc:last-child{border-radius:12px;}
   footer{flex-direction:column;gap:12px;text-align:center;padding:40px 20px;}
+  /* bridge section */
+  .bridge-stats-grid{grid-template-columns:1fr 1fr!important;}
+}
+@media(max-width:600px){
+  .bridge-stats-grid{grid-template-columns:1fr!important;}
 }
 @media(max-width:600px){
   .ind-grid{grid-template-columns:repeat(2,1fr);}
   .steps{grid-template-columns:1fr;}
   .stats{gap:20px;flex-wrap:wrap;}
 }
+
+/* ==========================================
+   NEW FEATURES CSS
+========================================== */
+
+/* FRESHNESS METER */
+.freshness-sec{padding:96px 48px;background:var(--bg);}
+.fm-wrap{margin-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;}
+.fm-gauge-area{display:flex;flex-direction:column;align-items:center;gap:28px;}
+.fm-gauge{position:relative;width:220px;height:220px;}
+.fm-gauge svg{width:100%;height:100%;}
+.fm-gauge-track{fill:none;stroke:var(--bg3);stroke-width:16;stroke-linecap:round;}
+.fm-gauge-fill{fill:none;stroke-width:16;stroke-linecap:round;transition:stroke-dashoffset 1.2s cubic-bezier(.4,0,.2,1),stroke .5s ease;transform-origin:center;transform:rotate(-210deg);}
+.fm-pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.fm-pct-num{font-family:'Instrument Serif',serif;font-size:52px;font-style:italic;color:var(--accent);line-height:1;}
+.fm-pct-lbl{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:4px;}
+.fm-bar-wrap{width:100%;max-width:300px;height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;}
+.fm-bar-fill{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1),background .5s ease;}
+.fm-status-lbl{font-size:15px;font-weight:600;letter-spacing:.02em;}
+.fm-controls{display:flex;flex-direction:column;gap:16px;}
+.fm-controls h3{font-family:'Instrument Serif',serif;font-size:24px;font-style:italic;line-height:1.2;margin-bottom:6px;}
+.fm-controls p{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:20px;}
+.fm-slider-row{display:flex;flex-direction:column;gap:8px;}
+.fm-slider-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;display:flex;justify-content:space-between;}
+.fm-slider{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:var(--bg3);outline:none;cursor:pointer;}
+.fm-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg);box-shadow:0 0 0 3px rgba(245,200,66,.2);}
+.fm-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg);}
+.fm-stage-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.fm-pill{font-family:'DM Mono',monospace;font-size:10px;padding:6px 14px;border-radius:20px;border:.5px solid var(--border2);background:none;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+.fm-pill.active{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+
+/* SPOILAGE TIMELINE */
+.timeline-sec{padding:96px 48px;background:var(--bg2);}
+.tl-wrap{margin-top:56px;position:relative;}
+.tl-track{position:absolute;top:40px;left:0;right:0;height:2px;background:var(--border);z-index:0;}
+.tl-track-fill{height:100%;background:linear-gradient(90deg,#4ade80,#fbbf24,#f87171);width:0%;transition:width 1.4s cubic-bezier(.4,0,.2,1);}
+.tl-stages{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;position:relative;z-index:1;}
+.tl-stage{display:flex;flex-direction:column;align-items:center;gap:14px;cursor:pointer;}
+.tl-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);background:var(--bg2);transition:all .3s;position:relative;}
+.tl-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px solid transparent;transition:border-color .3s;}
+.tl-stage.active .tl-dot{transform:scale(1.35);}
+.tl-stage.active .tl-dot::after{border-color:inherit;}
+.tl-card{background:var(--bg);border:.5px solid var(--border);border-radius:12px;padding:16px;text-align:center;transition:all .3s;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.tl-stage.active .tl-card{border-color:var(--border2);background:var(--bg3);transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+.tl-emoji{font-size:22px;}
+.tl-name{font-size:13px;font-weight:600;}
+.tl-day{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;margin-top:2px;}
+.tl-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-top:4px;}
+.tl-nav{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:32px;}
+.tl-nav-btn{font-family:'DM Mono',monospace;font-size:11px;padding:8px 18px;border:.5px solid var(--border2);border-radius:6px;background:none;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:.04em;}
+.tl-nav-btn:hover{border-color:var(--accent);color:var(--accent);}
+.tl-nav-lbl{font-family:'DM Mono',monospace;font-size:11px;color:var(--faint);letter-spacing:.06em;}
+
+/* IMPACT CALCULATOR */
+.calc-sec{padding:96px 48px;background:var(--bg);}
+.calc-wrap{margin-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:start;}
+.calc-inputs{background:var(--bg2);border:.5px solid var(--border);border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:22px;}
+.calc-field{display:flex;flex-direction:column;gap:8px;}
+.calc-field label{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;}
+.calc-input-row{display:flex;align-items:center;gap:10px;}
+.calc-inp{flex:1;background:var(--bg3);border:.5px solid var(--border2);border-radius:8px;padding:12px 16px;color:var(--text);font-family:'Syne',sans-serif;font-size:15px;font-weight:500;outline:none;transition:border-color .2s;}
+.calc-inp:focus{border-color:var(--accent);}
+.calc-unit{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.06em;white-space:nowrap;}
+.calc-btn{width:100%;padding:14px;background:var(--accent);color:var(--bg);border:none;border-radius:8px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.04em;transition:transform .15s,box-shadow .15s;margin-top:6px;}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(245,200,66,.25);}
+.calc-results{display:flex;flex-direction:column;gap:16px;}
+.calc-results h3{font-family:'Instrument Serif',serif;font-size:24px;font-style:italic;margin-bottom:4px;}
+.calc-card{background:var(--bg2);border:.5px solid var(--border);border-radius:14px;padding:24px;display:flex;align-items:center;gap:18px;transition:border-color .3s;}
+.calc-card.highlight{border-color:rgba(245,200,66,.25);}
+.calc-card-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.calc-card-body{flex:1;}
+.calc-card-num{font-family:'Instrument Serif',serif;font-size:28px;font-style:italic;color:var(--accent);line-height:1;}
+.calc-card-lbl{font-size:12px;color:var(--muted);margin-top:3px;}
+
+/* PRODUCT COMPARISON */
+.compare-sec{padding:96px 48px;background:var(--bg2);}
+.compare-table{margin-top:56px;border:.5px solid var(--border);border-radius:16px;overflow:hidden;}
+.compare-header{display:grid;grid-template-columns:2fr 1fr 1fr;background:var(--bg3);}
+.compare-header div{padding:18px 24px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;}
+.compare-header div:nth-child(2){color:var(--muted);}
+.compare-header div:nth-child(3){color:var(--accent);}
+.compare-row{display:grid;grid-template-columns:2fr 1fr 1fr;border-top:.5px solid var(--border);transition:background .2s;}
+.compare-row:hover{background:var(--bg3);}
+.compare-cell{padding:16px 24px;font-size:13px;display:flex;align-items:center;gap:8px;}
+.compare-cell:first-child{color:var(--text);font-weight:500;}
+.compare-cell:nth-child(2){color:var(--muted);}
+.compare-cell:nth-child(3){color:var(--text);}
+.c-no{color:#f87171;font-size:16px;}
+.c-yes{color:#4ade80;font-size:16px;}
+.c-maybe{color:#fbbf24;font-size:16px;}
+
+/* FUTURE VISION */
+.vision-sec{padding:96px 48px;background:var(--bg);}
+.vision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:56px;}
+.vcard{background:var(--bg2);border:.5px solid var(--border);border-radius:14px;padding:28px 24px;transition:all .3s;position:relative;overflow:hidden;cursor:default;}
+.vcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--vc,var(--accent));transform:scaleX(0);transform-origin:left;transition:transform .35s;}
+.vcard:hover{background:var(--bg3);border-color:var(--border2);transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.3);}
+.vcard:hover::before{transform:scaleX(1);}
+.vcard-icon{font-size:28px;margin-bottom:16px;}
+.vcard-tag{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--vc,var(--accent));margin-bottom:10px;}
+.vcard h3{font-size:15px;font-weight:600;margin-bottom:8px;line-height:1.3;}
+.vcard p{font-size:12px;color:var(--muted);line-height:1.7;}
+.vcard-timeline{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);margin-top:14px;letter-spacing:.06em;}
+
+/* LIVE STATS COUNTER */
+.livestats-sec{padding:96px 48px;background:var(--bg2);}
+.ls-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:56px;}
+.ls-card{background:var(--bg);border:.5px solid var(--border);border-radius:14px;padding:32px 24px;text-align:center;position:relative;overflow:hidden;}
+.ls-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--lc,var(--accent)),transparent);animation:ls-shimmer 2.5s ease-in-out infinite;}
+@keyframes ls-shimmer{0%,100%{opacity:.3;}50%{opacity:1;}}
+.ls-num{font-family:'Instrument Serif',serif;font-size:48px;font-style:italic;color:var(--lc,var(--accent));line-height:1;margin-bottom:6px;}
+.ls-unit{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;}
+.ls-label{font-size:13px;color:var(--muted);}
+.ls-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--lc,var(--accent));animation:blink 2s infinite;margin-right:6px;vertical-align:middle;}
+
+/* NFC JOURNEY ANIMATION */
+.nfcjourney-sec{padding:96px 48px;background:var(--bg);}
+.nj-wrap{margin-top:56px;display:flex;align-items:center;justify-content:center;gap:0;padding:40px;background:var(--bg2);border:.5px solid var(--border);border-radius:20px;}
+.nj-node{display:flex;flex-direction:column;align-items:center;gap:14px;flex:1;padding:0 12px;}
+.nj-icon-wrap{width:72px;height:72px;border-radius:16px;background:var(--bg3);border:.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:26px;transition:all .4s;position:relative;}
+.nj-node.nj-active .nj-icon-wrap{border-color:var(--accent);background:rgba(245,200,66,.08);box-shadow:0 0 0 6px rgba(245,200,66,.08);}
+.nj-node.nj-done .nj-icon-wrap{border-color:#4ade80;background:rgba(74,222,128,.06);}
+.nj-lbl{font-size:12px;font-weight:600;text-align:center;}
+.nj-sub{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);text-align:center;letter-spacing:.04em;}
+.nj-arrow{display:flex;align-items:center;flex-shrink:0;width:60px;}
+.nj-arrow-line{height:2px;background:var(--border);flex:1;position:relative;overflow:hidden;}
+.nj-arrow-fill{position:absolute;top:0;left:-100%;height:100%;width:100%;background:linear-gradient(90deg,transparent,var(--accent));transition:left .5s ease;}
+.nj-arrow-fill.go{left:0;}
+.nj-arrow-head{width:0;height:0;border-top:5px solid transparent;border-bottom:5px solid transparent;border-left:7px solid var(--border);transition:border-left-color .3s;flex-shrink:0;}
+.nj-arrow-head.go{border-left-color:var(--accent);}
+.nj-play-btn{display:flex;align-items:center;justify-content:center;margin-top:28px;}
+.nj-btn{font-family:'DM Mono',monospace;font-size:11px;padding:10px 22px;border:.5px solid var(--accent);border-radius:6px;background:none;color:var(--accent);cursor:pointer;transition:all .2s;letter-spacing:.06em;}
+.nj-btn:hover{background:var(--accent);color:var(--bg);}
+
+/* FLOATING AI ASSISTANT */
+.ai-fab{position:fixed;bottom:136px;right:24px;z-index:200;width:46px;height:46px;border-radius:50%;background:rgba(245,200,66,.15);border:1.5px solid rgba(245,200,66,.6);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;box-shadow:0 0 0 4px rgba(245,200,66,.08),0 4px 20px rgba(0,0,0,.5);}
+.ai-fab:hover{background:rgba(245,200,66,.25);border-color:var(--accent);transform:scale(1.1);}
+.ai-fab svg{width:20px;height:20px;stroke:var(--accent);}
+.ai-chat{position:fixed;bottom:196px;right:24px;z-index:199;width:310px;background:var(--bg2);border:.5px solid var(--border2);border-radius:16px;overflow:hidden;box-shadow:0 16px 48px rgba(0,0,0,.6);display:none;flex-direction:column;max-height:420px;}
+.ai-chat.open{display:flex;animation:up .3s ease;}
+.ai-chat-header{padding:14px 18px;border-bottom:.5px solid var(--border);display:flex;align-items:center;gap:10px;}
+.ai-chat-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:blink 2s infinite;flex-shrink:0;}
+.ai-chat-title{font-size:13px;font-weight:600;flex:1;}
+.ai-chat-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0;line-height:1;}
+.ai-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;max-height:260px;}
+.ai-msg{padding:10px 13px;border-radius:10px;font-size:12px;line-height:1.65;max-width:85%;}
+.ai-msg.bot{background:var(--bg3);color:var(--text);border-radius:10px 10px 10px 2px;align-self:flex-start;}
+.ai-msg.user{background:rgba(245,200,66,.12);color:var(--text);border:.5px solid rgba(245,200,66,.2);border-radius:10px 10px 2px 10px;align-self:flex-end;}
+.ai-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px;}
+.ai-sug{font-family:'DM Mono',monospace;font-size:9px;padding:5px 10px;border:.5px solid var(--border2);border-radius:20px;background:none;color:var(--muted);cursor:pointer;transition:all .2s;letter-spacing:.03em;}
+.ai-sug:hover{border-color:var(--accent);color:var(--accent);}
+.ai-input-row{display:flex;gap:8px;padding:12px 14px;border-top:.5px solid var(--border);}
+.ai-inp{flex:1;background:var(--bg3);border:.5px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'Syne',sans-serif;font-size:12px;outline:none;transition:border-color .2s;}
+.ai-inp:focus{border-color:var(--accent);}
+.ai-send{width:32px;height:32px;border-radius:8px;background:var(--accent);border:none;color:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s;}
+.ai-send:hover{transform:scale(1.08);}
+
+/* 3D PRODUCT SHOWCASE */
+.showcase-sec{padding:96px 48px;background:var(--bg2);}
+.showcase-wrap{margin-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;}
+.showcase-scene{perspective:900px;display:flex;align-items:center;justify-content:center;height:340px;}
+.showcase-card-3d{width:220px;height:300px;position:relative;transform-style:preserve-3d;animation:card3d-spin 8s linear infinite;cursor:grab;}
+.showcase-card-3d:active{cursor:grabbing;}
+@keyframes card3d-spin{
+  0%{transform:rotateY(0deg) rotateX(8deg);}
+  25%{transform:rotateY(90deg) rotateX(4deg);}
+  50%{transform:rotateY(180deg) rotateX(8deg);}
+  75%{transform:rotateY(270deg) rotateX(4deg);}
+  100%{transform:rotateY(360deg) rotateX(8deg);}
+}
+.card3d-face{position:absolute;inset:0;border-radius:20px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;}
+.card3d-front{background:linear-gradient(135deg,var(--bg3) 0%,rgba(245,200,66,.06) 100%);border:1px solid rgba(245,200,66,.3);transform:rotateY(0deg);}
+.card3d-back{background:linear-gradient(135deg,rgba(74,222,128,.04) 0%,var(--bg3) 100%);border:1px solid rgba(74,222,128,.3);transform:rotateY(180deg);}
+.card3d-side-r{position:absolute;width:30px;height:300px;right:-15px;top:0;background:linear-gradient(180deg,rgba(245,200,66,.05),rgba(245,200,66,.12),rgba(245,200,66,.05));transform:rotateY(90deg) translateZ(110px);border-radius:0 10px 10px 0;}
+.card3d-side-l{position:absolute;width:30px;height:300px;left:-15px;top:0;background:linear-gradient(180deg,rgba(74,222,128,.04),rgba(74,222,128,.08),rgba(74,222,128,.04));transform:rotateY(-90deg) translateZ(110px);border-radius:10px 0 0 10px;}
+.card3d-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.card3d-brand{font-family:'Instrument Serif',serif;font-size:22px;font-style:italic;color:var(--accent);margin-bottom:6px;text-align:center;}
+.card3d-sub{font-size:11px;color:var(--muted);text-align:center;line-height:1.6;margin-bottom:16px;}
+.card3d-badge{font-family:'DM Mono',monospace;font-size:9px;padding:5px 12px;border-radius:20px;border:.5px solid rgba(245,200,66,.3);color:var(--accent);background:rgba(245,200,66,.06);letter-spacing:.06em;}
+.card3d-badge.green{border-color:rgba(74,222,128,.3);color:#4ade80;background:rgba(74,222,128,.06);}
+.showcase-info{display:flex;flex-direction:column;gap:18px;}
+.showcase-info h3{font-family:'Instrument Serif',serif;font-size:28px;font-style:italic;line-height:1.2;margin-bottom:6px;}
+.showcase-info p{font-size:14px;color:var(--muted);line-height:1.8;}
+.showcase-specs{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
+.spec-row{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:var(--bg3);border-radius:8px;font-size:12px;}
+.spec-key{color:var(--muted);}
+.spec-val{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.04em;}
+
+/* RESPONSIVE NEW SECTIONS */
+@media(max-width:960px){
+  .fm-wrap,.calc-wrap,.compare-header,.showcase-wrap{grid-template-columns:1fr;}
+  .vision-grid,.ls-grid{grid-template-columns:1fr 1fr;}
+  .nj-wrap{flex-wrap:wrap;gap:20px;padding:24px;}
+  .nj-arrow{display:none;}
+  .tl-stages{grid-template-columns:repeat(3,1fr);}
+  .freshness-sec,.timeline-sec,.calc-sec,.compare-sec,.vision-sec,.livestats-sec,.nfcjourney-sec,.showcase-sec{padding:72px 20px;}
+  .fm-gauge{width:180px;height:180px;}
+}
+@media(max-width:600px){
+  .vision-grid,.ls-grid{grid-template-columns:1fr;}
+  .tl-stages{grid-template-columns:repeat(2,1fr);}
+  .compare-header,.compare-row{grid-template-columns:1.5fr 1fr 1fr;}
+  .ai-chat{width:calc(100vw - 32px);right:16px;}
+}
+
+/* ==========================================
+   HAMBURGER BUTTON
+========================================== */
+.hamburger-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: rgba(245,200,66,.08);
+  border: 1px solid rgba(245,200,66,.25);
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 9px 10px;
+  z-index: 101;
+  transition: background .2s, border-color .2s;
+  flex-shrink: 0;
+}
+.hamburger-btn:hover {
+  background: rgba(245,200,66,.18);
+  border-color: rgba(245,200,66,.5);
+}
+.hamburger-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: all 0.28s cubic-bezier(.4,0,.2,1);
+}
+.hamburger-btn.open span:nth-child(1) {
+  transform: rotate(45deg) translate(4.5px, 4.5px);
+}
+.hamburger-btn.open span:nth-child(2) {
+  opacity: 0; transform: scaleX(0);
+}
+.hamburger-btn.open span:nth-child(3) {
+  transform: rotate(-45deg) translate(4.5px, -4.5px);
+}
+
+/* ==========================================
+   SIDE MENU OVERLAY
+========================================== */
+.side-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px);
+  z-index: 299;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+.side-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ==========================================
+   SIDE MENU PANEL
+========================================== */
+#sidebar, .sidebar {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 280px;
+  height: 100vh;
+  background: var(--bg2);
+  border-right: .5px solid var(--border2);
+  z-index: 300;
+  transition: left .32s cubic-bezier(.4,0,.2,1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#sidebar.open, .sidebar.open {
+  left: 0;
+}
+
+/* Header bar inside panel */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 16px;
+  border-bottom: .5px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .16em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.sidebar-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(245,200,66,.08);
+  border: .5px solid var(--border2);
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, color .2s;
+  line-height: 1;
+  padding: 0;
+}
+.sidebar-close:hover { background: rgba(245,200,66,.18); color: var(--accent); }
+
+/* Scrollable body */
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0 24px;
+}
+.sidebar-body::-webkit-scrollbar { width: 3px; }
+.sidebar-body::-webkit-scrollbar-thumb { background: rgba(245,200,66,.2); border-radius: 2px; }
+
+/* Section groups */
+.sidebar-group {
+  padding: 16px 0 4px;
+}
+.sidebar-group:not(:first-child) {
+  border-top: .5px solid var(--border);
+  margin-top: 4px;
+}
+.sidebar-group-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .16em;
+  color: var(--faint);
+  text-transform: uppercase;
+  padding: 0 22px 8px;
+}
+
+/* Nav links */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 22px;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: background .15s, color .15s;
+  position: relative;
+}
+.sidebar-link:hover {
+  background: rgba(245,200,66,.05);
+  color: var(--text);
+}
+.sidebar-link:hover .sidebar-link-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+.sidebar-link-icon {
+  font-size: 15px;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.sidebar-link-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.sidebar-link-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+.sidebar-link:hover .sidebar-link-title {
+  color: var(--accent);
+}
+.sidebar-link-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--faint);
+  letter-spacing: .04em;
+}
+.sidebar-link-arrow {
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity .15s, transform .15s;
+  color: var(--accent);
+}
+.sidebar-link-arrow svg { display: block; }
+
+/* Footer strip in sidebar */
+.sidebar-footer {
+  padding: 14px 22px;
+  border-top: .5px solid var(--border);
+  flex-shrink: 0;
+}
+.sidebar-cta {
+  display: block;
+  text-align: center;
+  padding: 11px;
+  background: rgba(245,200,66,.1);
+  border: .5px solid rgba(245,200,66,.3);
+  border-radius: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  color: var(--accent);
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background .2s;
+}
+.sidebar-cta:hover { background: rgba(245,200,66,.18); }
+
 </style>
 </head>
 <body>
@@ -386,22 +827,129 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
   </svg>
 </button>
 
+<!-- SIDE OVERLAY -->
+<div class="side-overlay" id="sideOverlay" onclick="closeSidebar()"></div>
+
+<!-- SIDEBAR PANEL -->
+<div id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">Beyond Expiry</div>
+    <button class="sidebar-close" onclick="closeSidebar()">×</button>
+  </div>
+  <div class="sidebar-body">
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Discover</div>
+      <a href="#problem" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">⚠️</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">The Problem</span><span class="sidebar-link-sub">Why expiry dates fail</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#how" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">⚙️</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">How It Works</span><span class="sidebar-link-sub">Chemistry to verdict</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#framework" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">🧪</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Food Indicators</span><span class="sidebar-link-sub">5 targeted sensors</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#spoilage-timeline" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">🕐</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Spoilage Timeline</span><span class="sidebar-link-sub">Fresh → Spoiled stages</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Try It</div>
+      <a href="#scanner" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">📡</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Live Scanner</span><span class="sidebar-link-sub">Scan an NFC tag now</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#demo" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">▶️</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Live Demo</span><span class="sidebar-link-sub">Animated system walkthrough</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#history" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">🕓</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Scan History</span><span class="sidebar-link-sub">Your last 5 scans</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Science & Impact</div>
+      <a href="#tech" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">🔬</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Technology</span><span class="sidebar-link-sub">The science inside</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#impact" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">🌍</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Impact & Sustainability</span><span class="sidebar-link-sub">Global food waste mission</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#impact-calculator" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">📊</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Impact Calculator</span><span class="sidebar-link-sub">Food, CO₂ & money saved</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+    </div>
+    <div class="sidebar-group">
+      <div class="sidebar-group-label">Product</div>
+      <a href="#product-comparison" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">⚖️</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Product Comparison</span><span class="sidebar-link-sub">Us vs. traditional labels</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#future-vision" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">🚀</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Future Vision</span><span class="sidebar-link-sub">Where this goes next</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#product-showcase" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">📦</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Product Showcase</span><span class="sidebar-link-sub">3D rotating sensor card</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+      <a href="#qr" class="sidebar-link" onclick="closeSidebar()">
+        <span class="sidebar-link-icon">📲</span>
+        <span class="sidebar-link-text"><span class="sidebar-link-title">Share This App</span><span class="sidebar-link-sub">QR code & link</span></span>
+        <span class="sidebar-link-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <a href="#scanner" class="sidebar-cta" onclick="closeSidebar()">✦ Try the Scanner</a>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav>
-  <a href="#" class="logo">Beyond Expiry Dates</a>
+  <div style="display:flex;align-items:center;gap:14px;">
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" title="All sections" aria-label="Open section menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#" class="logo">Beyond Expiry Dates</a>
+  </div>
   <ul class="nav-links">
     <li><a href="#problem">Problem</a></li>
     <li><a href="#how">How It Works</a></li>
-    <li><a href="#framework">Food Indicators</a></li>
-    <li><a href="#scanner">Scanner</a></li>
-    <li><a href="#tech">Technology</a></li>
-    <li><a href="#impact">Impact</a></li>
+    <li><a href="#framework">Indicators</a></li>
+    <li><a href="#spoilage-timeline">Freshness</a></li>
     <li><a href="#demo">Demo</a></li>
-    <li><a href="#history">History</a></li>
-    <li><a href="#qr">QR Code</a></li>
+    <li><a href="#scanner">Scanner</a></li>
+    <li><a href="#tech">Tech</a></li>
+    <li><a href="#impact">Impact</a></li>
+    <li><a href="#impact-calculator">Calculator</a></li>
+    <li><a href="#product-comparison">Compare</a></li>
+    <li><a href="#future-vision">Vision</a></li>
+    <li><a href="#qr">Share</a></li>
   </ul>
   <a href="#scanner" class="nav-btn">Try Scanner</a>
 </nav>
+
 
 <!-- HERO -->
 <section class="hero">
@@ -409,11 +957,11 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
   <!--
   <div class="hero-ring" style="width:700px;height:700px;top:-280px;right:-280px;"></div>
   <div class="hero-ring" style="width:350px;height:350px;bottom:60px;left:-140px;"></div>
-  -->                                                                                                                                                                                                                              
+  --> 
   <div>
     <div class="eyebrow">Know exactly what you're eating</div>
     <h1>Beyond<br><em>expiry dates</em></h1>
-    <p class="hero-sub">Chemical sensors built into your packaging tell you exactly how fresh your food is - not when it was made. Tap your phone, get the truth.</p>
+    <p class="hero-sub">Chemical sensors + NFC tell you the real freshness of your food — instantly. No more guessing with expiry dates.</p>
     <div class="hero-btns">
       <a href="#scanner" class="btn-gold">Try the Scanner</a>
       <a href="#framework" class="btn-ghost">
@@ -437,7 +985,6 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
       </div>
       <div class="hero-pill">Modular · Scalable · Passive</div>
     </div>
-    <!-- Inline sensor SVG illustration -->
     <div class="sensor-card">
       <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
         <rect width="52" height="52" rx="10" fill="rgba(245,200,66,0.08)"/>
@@ -609,6 +1156,83 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
       <div class="cpanel-sub">Color change reference guide</div>
     </div>
     <div id="colorRows"></div>
+  </div>
+</section>
+
+<!-- SPOILAGE TIMELINE -->
+<section class="timeline-sec" id="spoilage-timeline">
+  <div class="tag">Freshness</div>
+  <h2>Food's journey from <em style="font-family:'Instrument Serif',serif;font-style:italic;color:var(--accent);">fresh</em> to spoiled</h2>
+  <p class="sub-text" style="margin-top:14px;">Tap any stage to explore what's happening inside your package. Beyond Expiry catches it all.</p>
+  <div class="tl-wrap">
+    <div class="tl-track"><div class="tl-track-fill" id="tlTrackFill"></div></div>
+    <div class="tl-stages">
+      <div class="tl-stage active" onclick="selectTlStage(0)" data-idx="0">
+        <div class="tl-dot" style="background:#4ade80;border-color:#4ade80;"></div>
+        <div class="tl-card">
+          <div class="tl-emoji">🟢</div>
+          <div class="tl-name" style="color:#4ade80;">Fresh</div>
+          <div class="tl-day">Day 0–2</div>
+          <div class="tl-desc">No spoilage signals. Sensor reads clean. Safe and delicious.</div>
+        </div>
+      </div>
+      <div class="tl-stage" onclick="selectTlStage(1)" data-idx="1">
+        <div class="tl-dot" style="background:var(--bg2);border-color:#a3e635;"></div>
+        <div class="tl-card">
+          <div class="tl-emoji">🟡</div>
+          <div class="tl-name" style="color:#a3e635;">Still Good</div>
+          <div class="tl-day">Day 2–4</div>
+          <div class="tl-desc">Trace compounds detected. Perfectly fine — sensor confirms it.</div>
+        </div>
+      </div>
+      <div class="tl-stage" onclick="selectTlStage(2)" data-idx="2">
+        <div class="tl-dot" style="background:var(--bg2);border-color:#fbbf24;"></div>
+        <div class="tl-card">
+          <div class="tl-emoji">🟠</div>
+          <div class="tl-name" style="color:#fbbf24;">Consume Soon</div>
+          <div class="tl-day">Day 4–5</div>
+          <div class="tl-desc">Early spoilage markers rising. Cook it today, don't wait.</div>
+        </div>
+      </div>
+      <div class="tl-stage" onclick="selectTlStage(3)" data-idx="3">
+        <div class="tl-dot" style="background:var(--bg2);border-color:#fb923c;"></div>
+        <div class="tl-card">
+          <div class="tl-emoji">🔴</div>
+          <div class="tl-name" style="color:#fb923c;">At Risk</div>
+          <div class="tl-day">Day 5–6</div>
+          <div class="tl-desc">Spoilage compounds at threshold. High risk — do not eat raw.</div>
+        </div>
+      </div>
+      <div class="tl-stage" onclick="selectTlStage(4)" data-idx="4">
+        <div class="tl-dot" style="background:var(--bg2);border-color:#f87171;"></div>
+        <div class="tl-card">
+          <div class="tl-emoji">⚫</div>
+          <div class="tl-name" style="color:#f87171;">Spoiled</div>
+          <div class="tl-day">Day 6+</div>
+          <div class="tl-desc">Sensor confirms spoilage. Discard immediately — do not eat.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-nav">
+      <button class="tl-nav-btn" onclick="tlPrev()">← Previous</button>
+      <span class="tl-nav-lbl" id="tlNavLbl">Stage 1 of 5</span>
+      <button class="tl-nav-btn" onclick="tlNext()">Next →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ANIMATED DEMO -->
+<section class="demo-sec" id="demo">
+  <div class="tag">Live demo</div>
+  <h2>See the system in action</h2>
+  <p class="sub-text" style="margin-top:14px;">Watch how Beyond Expiry works - from the indicator changing color inside the package, to the NFC signal reaching your phone.</p>
+  <div class="demo-wrap">
+    <div class="demo-tabs">
+      <button class="dtab on" onclick="switchDemo(this,'indicator')">Color Indicator</button>
+      <button class="dtab" onclick="switchDemo(this,'nfc')">NFC Signal</button>
+      <button class="dtab" onclick="switchDemo(this,'flow')">Full Scan Flow</button>
+    </div>
+    <div class="demo-stage" id="demoStage"></div>
   </div>
 </section>
 
@@ -801,21 +1425,6 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
   </div>
 </section>
 
-<!-- ANIMATED DEMO -->
-<section class="demo-sec" id="demo">
-  <div class="tag">Live demo</div>
-  <h2>See the system in action</h2>
-  <p class="sub-text" style="margin-top:14px;">Watch how Beyond Expiry works - from the indicator changing color inside the package, to the NFC signal reaching your phone.</p>
-  <div class="demo-wrap">
-    <div class="demo-tabs">
-      <button class="dtab on" onclick="switchDemo(this,'indicator')">Color Indicator</button>
-      <button class="dtab" onclick="switchDemo(this,'nfc')">NFC Signal</button>
-      <button class="dtab" onclick="switchDemo(this,'flow')">Full Scan Flow</button>
-    </div>
-    <div class="demo-stage" id="demoStage"></div>
-  </div>
-</section>
-
 <!-- PWA INSTALL BANNER -->
 <div class="pwa-banner" id="pwaBanner">
   <div class="pwa-banner-icon">
@@ -833,6 +1442,28 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
   <button class="pwa-close" onclick="document.getElementById('pwaBanner').classList.remove('show')">×</button>
 </div>
 
+<!-- BRIDGE SECTION: Stats strip between Impact and Scan History (maintains black/brown alternation) -->
+<section style="padding:0;background:var(--bg);border-top:.5px solid var(--border);border-bottom:.5px solid var(--border);">
+  <div class="bridge-stats-grid" style="max-width:1200px;margin:0 auto;padding:48px 48px;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;">
+    <div style="padding:32px 24px;background:var(--bg2);border-radius:12px 0 0 12px;text-align:center;">
+      <div style="font-family:'Instrument Serif',serif;font-size:44px;font-style:italic;color:var(--accent);line-height:1;margin-bottom:8px;">1/3</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;">of all food produced is wasted</div>
+    </div>
+    <div style="padding:32px 24px;background:var(--bg2);border-left:.5px solid var(--border);text-align:center;">
+      <div style="font-family:'Instrument Serif',serif;font-size:44px;font-style:italic;color:#4ade80;line-height:1;margin-bottom:8px;">40%</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;">waste reduced with real-time data</div>
+    </div>
+    <div style="padding:32px 24px;background:var(--bg2);border-left:.5px solid var(--border);text-align:center;">
+      <div style="font-family:'Instrument Serif',serif;font-size:44px;font-style:italic;color:#60b4ff;line-height:1;margin-bottom:8px;">&lt;1s</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;">to get a freshness verdict</div>
+    </div>
+    <div style="padding:32px 24px;background:var(--bg2);border-left:.5px solid var(--border);border-radius:0 12px 12px 0;text-align:center;">
+      <div style="font-family:'Instrument Serif',serif;font-size:44px;font-style:italic;color:var(--accent);line-height:1;margin-bottom:8px;">0W</div>
+      <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;">passive · no battery ever</div>
+    </div>
+  </div>
+</section>
+
 <!-- SCAN HISTORY -->
 <section class="history-sec" id="history">
   <div class="tag">Scan history</div>
@@ -842,6 +1473,250 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
     <div class="history-empty" id="historyEmpty">No scans yet - tap "Scan NFC Tag" to get started</div>
   </div>
   <button class="history-clear" id="historyClear" style="display:none;" onclick="clearHistory()">Clear history</button>
+</section>
+
+<!-- IMPACT CALCULATOR -->
+<section class="calc-sec" id="impact-calculator">
+  <div class="tag">Impact Calculator</div>
+  <h2>Calculate your <em style="font-family:'Instrument Serif',serif;font-style:italic;">impact</em></h2>
+  <p class="sub-text" style="margin-top:14px;">See how much food, CO₂, and money you'd save by switching to real-time freshness monitoring.</p>
+  <div class="calc-wrap">
+    <div class="calc-inputs">
+      <div class="calc-field">
+        <label>Packages monitored per day</label>
+        <div class="calc-input-row">
+          <input type="number" class="calc-inp" id="calcPkg" value="5" min="1" max="10000">
+          <span class="calc-unit">packages / day</span>
+        </div>
+      </div>
+      <div class="calc-field">
+        <label>Average weight per package</label>
+        <div class="calc-input-row">
+          <input type="number" class="calc-inp" id="calcWeight" value="0.5" min="0.01" step="0.1">
+          <span class="calc-unit">kg / package</span>
+        </div>
+      </div>
+      <div class="calc-field">
+        <label>Estimated waste reduction</label>
+        <div class="calc-input-row">
+          <input type="number" class="calc-inp" id="calcWaste" value="30" min="1" max="100">
+          <span class="calc-unit">% less waste</span>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="runCalculator()">Calculate Impact →</button>
+    </div>
+    <div class="calc-results">
+      <h3>Your estimated impact</h3>
+      <div class="calc-card" id="calcCard1">
+        <div class="calc-card-icon" style="background:rgba(74,222,128,.1);">🌿</div>
+        <div class="calc-card-body">
+          <div class="calc-card-num" id="calcFood" style="color:#4ade80;">-</div>
+          <div class="calc-card-lbl">kg of food saved per year</div>
+        </div>
+      </div>
+      <div class="calc-card" id="calcCard2">
+        <div class="calc-card-icon" style="background:rgba(96,180,255,.1);">☁️</div>
+        <div class="calc-card-body">
+          <div class="calc-card-num" id="calcCo2" style="color:#60b4ff;">-</div>
+          <div class="calc-card-lbl">kg of CO₂ prevented per year</div>
+        </div>
+      </div>
+      <div class="calc-card" id="calcCard3">
+        <div class="calc-card-icon" style="background:rgba(245,200,66,.1);">💰</div>
+        <div class="calc-card-body">
+          <div class="calc-card-num" id="calcMoney" style="color:var(--accent);">-</div>
+          <div class="calc-card-lbl">estimated money saved per year (USD)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT COMPARISON -->
+<section class="compare-sec" id="product-comparison">
+  <div class="tag">Product Comparison</div>
+  <h2>Why beyond expiry<br>dates wins</h2>
+  <p class="sub-text" style="margin-top:14px;">Traditional expiry labels vs. real-time sensor technology - side by side.</p>
+  <div class="compare-table">
+    <div class="compare-header">
+      <div>Feature</div>
+      <div>Traditional Labels</div>
+      <div>✦ Beyond Expiry</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell">Real-time freshness reading</div>
+      <div class="compare-cell"><span class="c-no">✗</span> Not possible</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> Instant, every tap</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell">Detects actual chemical spoilage</div>
+      <div class="compare-cell"><span class="c-no">✗</span> Estimate only</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> Direct detection</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell">Works after temperature abuse</div>
+      <div class="compare-cell"><span class="c-no">✗</span> Label unchanged</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> Sensor updates</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell">Prevents unnecessary waste</div>
+      <div class="compare-cell"><span class="c-maybe">~</span> Inconsistent</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> Proven reduction</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell">Works without battery or internet</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> Yes (paper only)</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> Passive NFC chip</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell">Modular across food categories</div>
+      <div class="compare-cell"><span class="c-no">✗</span> One label fits all</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> 5 targeted sensors</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell">Consumer can verify freshness</div>
+      <div class="compare-cell"><span class="c-no">✗</span> Trust the date</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> Tap and verify</div>
+    </div>
+    <div class="compare-row">
+      <div class="compare-cell">Smartphone-readable</div>
+      <div class="compare-cell"><span class="c-no">✗</span> Visual only</div>
+      <div class="compare-cell"><span class="c-yes">✓</span> NFC · any phone</div>
+    </div>
+  </div>
+</section>
+
+<!-- FUTURE VISION -->
+<section class="vision-sec" id="future-vision">
+  <div class="tag">Future Vision</div>
+  <h2>Where this technology<br>goes next</h2>
+  <p class="sub-text" style="margin-top:14px;">Beyond Expiry is a platform - and the applications extend far beyond your kitchen.</p>
+  <div class="vision-grid">
+    <div class="vcard" style="--vc:#60b4ff;">
+      <div class="vcard-icon">🧊</div>
+      <div class="vcard-tag">Smart Homes</div>
+      <h3>Smart Refrigerators</h3>
+      <p>Fridges that read every NFC sensor inside automatically, display freshness on the door, and remind you what to eat first - eliminating forgotten spoilage at the back of every shelf.</p>
+      <div class="vcard-timeline">Horizon → 2026–2028</div>
+    </div>
+    <div class="vcard" style="--vc:#a3e635;">
+      <div class="vcard-icon">🏪</div>
+      <div class="vcard-tag">Retail</div>
+      <h3>Retail Integration</h3>
+      <p>Supermarket shelves that scan every package in real time, automatically re-ordering before waste happens and prioritising products closest to spoilage for promotion - cutting losses by shelf.</p>
+      <div class="vcard-timeline">Horizon → 2025–2027</div>
+    </div>
+    <div class="vcard" style="--vc:#f5c842;">
+      <div class="vcard-icon">🍽️</div>
+      <div class="vcard-tag">Food Service</div>
+      <h3>Restaurant Inventory Tracking</h3>
+      <p>Walk-in coolers monitored in real time. Chefs see freshness dashboards before service. Compliance teams get automatic alerts. Less waste, better food, fewer health incidents.</p>
+      <div class="vcard-timeline">Horizon → 2025–2026</div>
+    </div>
+    <div class="vcard" style="--vc:#f87171;">
+      <div class="vcard-icon">🏥</div>
+      <div class="vcard-tag">Healthcare</div>
+      <h3>Hospital Food Monitoring</h3>
+      <p>Patient-safe meals verified at the point of service. Dietary and allergen safety cross-checked automatically. Zero-tolerance for spoilage in clinical nutrition - because lives depend on it.</p>
+      <div class="vcard-timeline">Horizon → 2026–2028</div>
+    </div>
+    <div class="vcard" style="--vc:#c084fc;">
+      <div class="vcard-icon">🌍</div>
+      <div class="vcard-tag">Global Scale</div>
+      <h3>Global Food Waste Reduction</h3>
+      <p>Deployed across supply chains, sensors create a real-time global map of food freshness. Logistics optimised. Carbon footprint of wasted food reduced. The 1.3 billion tonne problem finally has a data layer.</p>
+      <div class="vcard-timeline">Horizon → 2027–2030</div>
+    </div>
+    <div class="vcard" style="--vc:#fbbf24;">
+      <div class="vcard-icon">🚚</div>
+      <div class="vcard-tag">Supply Chain</div>
+      <h3>Cold Chain Verification</h3>
+      <p>Every pallet tracked from farm to shelf. Temperature abuse that happened two days ago shows up at the sensor level, not at the consumer's stomach. Accountability at every step.</p>
+      <div class="vcard-timeline">Horizon → 2025–2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- 3D PRODUCT SHOWCASE -->
+<section class="showcase-sec" id="product-showcase">
+  <div class="tag">Product Showcase</div>
+  <h2>The sensor package,<br>in full detail</h2>
+  <p class="sub-text" style="margin-top:14px;">A closer look at what makes Beyond Expiry different from anything on the market today.</p>
+  <div class="showcase-wrap">
+    <div class="showcase-scene">
+      <div class="showcase-card-3d" id="showcase3d">
+        <div class="card3d-side-l"></div>
+        <div class="card3d-side-r"></div>
+        <div class="card3d-face card3d-front">
+          <div class="card3d-label">Beyond Expiry Dates</div>
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" style="margin-bottom:12px;">
+            <rect width="56" height="56" rx="12" fill="rgba(245,200,66,0.08)"/>
+            <circle cx="28" cy="28" r="12" stroke="#f5c842" stroke-width="1.4" fill="none"/>
+            <circle cx="28" cy="28" r="4" fill="#f5c842" opacity=".9"/>
+            <path d="M16 28 Q22 21 28 28 Q34 35 40 28" stroke="#f5c842" stroke-width="1.2" fill="none" opacity=".6"/>
+            <path d="M12 28 Q20 17 28 28 Q36 39 44 28" stroke="#f5c842" stroke-width=".7" fill="none" opacity=".3"/>
+          </svg>
+          <div class="card3d-brand">Freshness<br>Sensor</div>
+          <div class="card3d-sub">Passive NFC · No battery<br>Built into packaging</div>
+          <div class="card3d-badge">✓ ISO Compliant</div>
+        </div>
+        <div class="card3d-face card3d-back">
+          <div class="card3d-label">Technical Specs</div>
+          <svg width="56" height="56" viewBox="0 0 56 56" fill="none" style="margin-bottom:12px;">
+            <rect width="56" height="56" rx="12" fill="rgba(74,222,128,0.06)"/>
+            <rect x="12" y="12" width="32" height="32" rx="5" stroke="rgba(74,222,128,0.6)" stroke-width="1" fill="none"/>
+            <line x1="20" y1="12" x2="20" y2="44" stroke="rgba(74,222,128,0.25)" stroke-width=".8"/>
+            <line x1="28" y1="12" x2="28" y2="44" stroke="rgba(74,222,128,0.25)" stroke-width=".8"/>
+            <line x1="36" y1="12" x2="36" y2="44" stroke="rgba(74,222,128,0.25)" stroke-width=".8"/>
+            <path d="M12 28 Q20 22 28 28 Q36 34 44 28" stroke="#4ade80" stroke-width="1.4" fill="none"/>
+          </svg>
+          <div class="card3d-brand">CNT Array<br>Sensor Core</div>
+          <div class="card3d-sub">5-gas detection · &lt;1s response<br>±2% accuracy</div>
+          <div class="card3d-badge green">✓ Food Safe</div>
+        </div>
+      </div>
+    </div>
+    <div class="showcase-info">
+      <h3>Engineered for food,<br>built for scale</h3>
+      <p>Every sensor is engineered to be as thin as a label, as cheap as a barcode, and as accurate as a lab test. The result: packaging intelligence at supermarket scale.</p>
+      <div class="showcase-specs">
+        <div class="spec-row">
+          <span class="spec-key">Technology</span>
+          <span class="spec-val">CNT + NFC passive</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Response time</span>
+          <span class="spec-val">&lt; 1 second</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Battery required</span>
+          <span class="spec-val">None · passive</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Thickness</span>
+          <span class="spec-val">&lt; 0.3 mm</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Sensor variants</span>
+          <span class="spec-val">5 food categories</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Accuracy</span>
+          <span class="spec-val">±2% detection rate</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-key">Compatibility</span>
+          <span class="spec-val">Any NFC smartphone</span>
+        </div>
+      </div>
+      <div style="margin-top:16px;">
+        <button class="btn-ghost" style="font-size:13px;" onclick="document.getElementById('scanner').scrollIntoView({behavior:'smooth'})">
+          Try the scanner demo
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- QR CODE -->
@@ -869,6 +1744,35 @@ footer{padding:48px 48px;border-top:.5px solid var(--border);display:flex;align-
     </div>
   </div>
 </section>
+
+<!-- FLOATING AI ASSISTANT -->
+<button class="ai-fab" id="aiFab" onclick="toggleAiChat()" title="Ask our AI assistant">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+  </svg>
+</button>
+<div class="ai-chat" id="aiChat">
+  <div class="ai-chat-header">
+    <div class="ai-chat-dot"></div>
+    <div class="ai-chat-title">Beyond Expiry Assistant</div>
+    <button class="ai-chat-close" onclick="toggleAiChat()">×</button>
+  </div>
+  <div class="ai-messages" id="aiMessages">
+    <div class="ai-msg bot">Hi! I'm the Beyond Expiry assistant. Ask me anything about our freshness sensor technology, NFC scanning, or food waste.</div>
+  </div>
+  <div class="ai-suggestions" id="aiSuggestions">
+    <button class="ai-sug" onclick="askAi('How does the NFC sensor work?')">How does NFC work?</button>
+    <button class="ai-sug" onclick="askAi('What foods does it support?')">What foods?</button>
+    <button class="ai-sug" onclick="askAi('Is it safe for food contact?')">Is it food safe?</button>
+    <button class="ai-sug" onclick="askAi('How accurate is it?')">How accurate?</button>
+  </div>
+  <div class="ai-input-row">
+    <input type="text" class="ai-inp" id="aiInp" placeholder="Ask a question…" onkeydown="if(event.key==='Enter')sendAiMsg()">
+    <button class="ai-send" onclick="sendAiMsg()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/></svg>
+    </button>
+  </div>
+</div>
 
 <footer>
   <div class="flogo">Beyond Expiry Dates</div>
@@ -1314,7 +2218,7 @@ if ('serviceWorker' in navigator) {
 }
 
 /* ── SCROLL ANIMATIONS ── */
-const revealEls = document.querySelectorAll('.sec,.how,.fw,.scanner-sec,.tech,.impact,.demo-sec,.history-sec,.qr-sec,.prob-layout,.steps,.ind-grid,.scanner-grid,.tech-grid,.impact-grid,.qr-layout');
+const revealEls = document.querySelectorAll('.sec,.how,.fw,.scanner-sec,.tech,.impact,.demo-sec,.history-sec,.qr-sec,.prob-layout,.steps,.ind-grid,.scanner-grid,.tech-grid,.impact-grid,.qr-layout,.freshness-sec,.timeline-sec,.calc-sec,.compare-sec,.vision-sec,.livestats-sec,.nfcjourney-sec,.showcase-sec,.fm-wrap,.tl-wrap,.calc-wrap,.compare-table,.vision-grid,.ls-grid,.nj-wrap,.showcase-wrap');
 revealEls.forEach(el => el.classList.add('reveal'));
 document.querySelectorAll('.prob-img-wrap,.hero-vis').forEach(el => el.classList.add('reveal-left'));
 document.querySelectorAll('.sinfo,.qr-info').forEach(el => el.classList.add('reveal-right'));
@@ -1409,6 +2313,326 @@ function downloadQR() {
 function copyUrl(btn) {
   navigator.clipboard.writeText("https://beyondexpirydates-gamma.vercel.app").then(() => { btn.textContent = '✓ Copied!'; btn.classList.add('copied'); setTimeout(() => { btn.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy URL'; btn.classList.remove('copied'); }, 2000); }).catch(()=>{});
 }
+
+/* ==========================================
+   NEW FEATURES JAVASCRIPT
+========================================== */
+
+/* ── 1. FRESHNESS METER ── */
+function updateFreshnessMeter(val) {
+  val = parseInt(val);
+  const fill = document.getElementById('fmGaugeFill');
+  const bar = document.getElementById('fmBarFill');
+  const numEl = document.getElementById('fmPctNum');
+  const lblEl = document.getElementById('fmStatusLbl');
+  const sliderValEl = document.getElementById('fmSliderVal');
+  const sliderEl = document.getElementById('fmSlider');
+  if (!fill) return;
+  // Gauge: circumference of r=88 circle = 2π×88 ≈ 552.9, but we use 440 (we truncated slightly in SVG)
+  const circumference = 2 * Math.PI * 88;
+  const offset = circumference - (val / 100) * circumference;
+  fill.style.strokeDasharray = circumference;
+  fill.style.strokeDashoffset = offset;
+  if (bar) { bar.style.width = val + '%'; }
+  if (numEl) numEl.textContent = val;
+  if (sliderValEl) sliderValEl.textContent = val + '%';
+  if (sliderEl) sliderEl.value = val;
+  let color, label;
+  if (val >= 75) { color = '#4ade80'; label = '● Fresh'; }
+  else if (val >= 50) { color = '#a3e635'; label = '● Still Good'; }
+  else if (val >= 30) { color = '#fbbf24'; label = '● Consume Soon'; }
+  else if (val >= 10) { color = '#fb923c'; label = '⚠ At Risk'; }
+  else { color = '#f87171'; label = '✗ Spoiled'; }
+  fill.style.stroke = color;
+  if (bar) bar.style.background = color;
+  if (lblEl) { lblEl.textContent = label; lblEl.style.color = color; }
+}
+function setFreshness(val, btn) {
+  document.querySelectorAll('.fm-pill').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  updateFreshnessMeter(val);
+}
+window.addEventListener('load', () => { setTimeout(() => updateFreshnessMeter(100), 500); });
+
+/* ── 2. SPOILAGE TIMELINE ── */
+let tlActive = 0;
+function selectTlStage(idx) {
+  tlActive = idx;
+  document.querySelectorAll('.tl-stage').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+  const fill = document.getElementById('tlTrackFill');
+  if (fill) fill.style.width = (idx / 4 * 100) + '%';
+  const lbl = document.getElementById('tlNavLbl');
+  if (lbl) lbl.textContent = 'Stage ' + (idx + 1) + ' of 5';
+}
+function tlPrev() { if (tlActive > 0) selectTlStage(tlActive - 1); }
+function tlNext() { if (tlActive < 4) selectTlStage(tlActive + 1); }
+window.addEventListener('load', () => { setTimeout(() => selectTlStage(0), 600); });
+
+/* ── 3. IMPACT CALCULATOR ── */
+function runCalculator() {
+  const pkg = parseFloat(document.getElementById('calcPkg').value) || 5;
+  const weight = parseFloat(document.getElementById('calcWeight').value) || 0.5;
+  const wasteReduction = parseFloat(document.getElementById('calcWaste').value) / 100 || 0.3;
+  const daysPerYear = 365;
+  const foodSaved = Math.round(pkg * weight * wasteReduction * daysPerYear);
+  const co2Saved = Math.round(foodSaved * 2.5);
+  const moneySaved = Math.round(foodSaved * 3.2);
+  function animateNum(el, target, prefix, suffix) {
+    if (!el) return;
+    let start = 0;
+    const dur = 1200;
+    const step = target / (dur / 16);
+    const interval = setInterval(() => {
+      start = Math.min(start + step, target);
+      el.textContent = (prefix || '') + Math.round(start).toLocaleString() + (suffix || '');
+      if (start >= target) clearInterval(interval);
+    }, 16);
+  }
+  animateNum(document.getElementById('calcFood'), foodSaved);
+  animateNum(document.getElementById('calcCo2'), co2Saved);
+  animateNum(document.getElementById('calcMoney'), moneySaved, '$');
+  ['calcCard1','calcCard2','calcCard3'].forEach(id => {
+    const c = document.getElementById(id);
+    if (c) { c.classList.add('highlight'); setTimeout(() => c.classList.remove('highlight'), 2000); }
+  });
+}
+window.addEventListener('load', () => { setTimeout(runCalculator, 800); });
+
+/* ── 6. LIVE STATS COUNTER ── */
+(function initLiveStats() {
+  // Food wasted globally per day ≈ 3.5M tonnes. Per-second = 3500000 / 86400 ≈ 40.5 tonnes/s
+  const foodBase = Math.floor(Date.now() / 1000) * 40.5;
+  const pkgBase = Math.floor(Date.now() / 1000) * 12;
+  const co2Base = Math.floor(Date.now() / 1000) * 0.8;
+  function fmt(n) {
+    if (n >= 1e6) return (n/1e6).toFixed(2) + 'M';
+    if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+    return Math.round(n).toLocaleString();
+  }
+  function updateStats() {
+    const now = Math.floor(Date.now() / 1000);
+    const food = document.getElementById('lsFood');
+    const pkg = document.getElementById('lsPkg');
+    const co2 = document.getElementById('lsCo2');
+    if (food) food.textContent = fmt(now * 40.5);
+    if (pkg) pkg.textContent = fmt(now * 12);
+    if (co2) co2.textContent = fmt(now * 0.8);
+  }
+  updateStats();
+  setInterval(updateStats, 1000);
+})();
+
+/* ── 7. NFC JOURNEY ANIMATION ── */
+let njRunning = false;
+function playNfcJourney() {
+  if (njRunning) return;
+  njRunning = true;
+  const btn = document.getElementById('njPlayBtn');
+  if (btn) btn.textContent = '⏳ Playing…';
+  // Reset
+  for (let i = 0; i < 4; i++) {
+    const node = document.getElementById('njNode' + i);
+    if (node) { node.classList.remove('nj-active', 'nj-done'); }
+    const arrow = document.getElementById('njArrow' + i);
+    if (arrow) { arrow.classList.remove('go'); }
+    const head = document.getElementById('njHead' + i);
+    if (head) { head.classList.remove('go'); }
+  }
+  const steps = [0, 1, 2, 3];
+  steps.forEach((idx, order) => {
+    setTimeout(() => {
+      const node = document.getElementById('njNode' + idx);
+      if (node) {
+        // Mark previous done
+        if (idx > 0) {
+          const prev = document.getElementById('njNode' + (idx - 1));
+          if (prev) { prev.classList.remove('nj-active'); prev.classList.add('nj-done'); }
+        }
+        node.classList.add('nj-active');
+        // Animate arrow before this node
+        if (idx > 0) {
+          const arrow = document.getElementById('njArrow' + (idx - 1));
+          const head = document.getElementById('njHead' + (idx - 1));
+          if (arrow) arrow.classList.add('go');
+          if (head) head.classList.add('go');
+        }
+      }
+      // Finish
+      if (idx === 3) {
+        setTimeout(() => {
+          node.classList.remove('nj-active');
+          node.classList.add('nj-done');
+          if (btn) btn.textContent = '▶ Play Again';
+          njRunning = false;
+        }, 700);
+      }
+    }, order * 700);
+  });
+}
+
+/* ── 8. FLOATING AI ASSISTANT ── */
+const aiResponses = {
+  'nfc': 'NFC stands for Near Field Communication. Our sensors use a passive NFC chip that gets powered by your phone\'s radio field when you tap. No battery needed - ever. The chip stores the freshness reading from the chemical indicator and transmits it wirelessly in under a second.',
+  'how': 'The system works in 4 steps: (1) A chemical indicator inside the packaging reacts to spoilage gases. (2) A CNT nanosensor detects the change. (3) The NFC chip stores the reading. (4) You tap your phone and get an instant verdict - Fresh, Consume Soon, or Spoiled.',
+  'food': 'Beyond Expiry supports 5 food categories: 🥩 Meat & Fish (amine-sensitive), 🥛 Dairy (pH indicator), 🍎 Fruits & Veg (ethylene-responsive), 🍞 Bakery (humidity indicator), and 🥫 Packaged Dry Foods (oxygen indicator). Each uses a chemically targeted sensor.',
+  'safe': 'Completely food safe. The indicator and sensor components are housed inside the packaging material, never in contact with your food. All materials meet food-contact safety regulations. The NFC chip is passive and emits no radiation.',
+  'accurate': 'Our CNT (carbon nanotube) sensors detect spoilage gases at parts-per-billion concentrations with ±2% accuracy. That\'s orders of magnitude more sensitive than any expiry date can offer - and more accurate than the human nose.',
+  'battery': 'No battery, ever. The NFC chip is entirely passive - it draws its operating power from the electromagnetic field of your phone when you tap. This means sensors work forever without any maintenance or power source.',
+  'cost': 'The sensor is designed to be as cheap as a barcode at scale - under $0.05 per unit in production. The goal is to add real-time freshness intelligence to packaging without changing the economics of food production.',
+  'waste': 'Food waste costs the global economy $1 trillion per year and generates 8-10% of all greenhouse gas emissions. By replacing guesswork with real data, Beyond Expiry can reduce household food waste by an estimated 25–40%.',
+  'default': 'Great question! Beyond Expiry uses chemical sensors and NFC technology to give you real-time freshness data - not a guess from a printed date. Try the scanner above, or ask me anything about how it works!'
+};
+function getAiResponse(msg) {
+  const m = msg.toLowerCase();
+  if (m.includes('nfc') || m.includes('wireless') || m.includes('chip') || m.includes('tap')) return aiResponses.nfc;
+  if (m.includes('how') && (m.includes('work') || m.includes('does'))) return aiResponses.how;
+  if (m.includes('food') || m.includes('categor') || m.includes('meat') || m.includes('dairy') || m.includes('support')) return aiResponses.food;
+  if (m.includes('safe') || m.includes('contact') || m.includes('health') || m.includes('toxic')) return aiResponses.safe;
+  if (m.includes('accurate') || m.includes('precision') || m.includes('detect') || m.includes('sensitivity')) return aiResponses.accurate;
+  if (m.includes('battery') || m.includes('power') || m.includes('charge') || m.includes('electric')) return aiResponses.battery;
+  if (m.includes('cost') || m.includes('price') || m.includes('cheap') || m.includes('afford')) return aiResponses.cost;
+  if (m.includes('waste') || m.includes('environment') || m.includes('co2') || m.includes('carbon') || m.includes('sustain')) return aiResponses.waste;
+  return aiResponses.default;
+}
+function toggleAiChat() {
+  const chat = document.getElementById('aiChat');
+  if (chat) chat.classList.toggle('open');
+}
+function addAiMessage(text, type) {
+  const msgs = document.getElementById('aiMessages');
+  if (!msgs) return;
+  const div = document.createElement('div');
+  div.className = 'ai-msg ' + type;
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function askAi(question) {
+  addAiMessage(question, 'user');
+  const sugs = document.getElementById('aiSuggestions');
+  if (sugs) sugs.style.display = 'none';
+  setTimeout(() => {
+    addAiMessage(getAiResponse(question), 'bot');
+  }, 450);
+}
+function sendAiMsg() {
+  const inp = document.getElementById('aiInp');
+  if (!inp || !inp.value.trim()) return;
+  const msg = inp.value.trim();
+  inp.value = '';
+  askAi(msg);
+}
+
+/* ── 9. SCAN SOUND EFFECTS ── */
+let scanSoundEnabled = true;
+function playBeepSound(type) {
+  if (!scanSoundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    if (type === 'good') {
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.setValueAtTime(1100, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.35);
+    } else if (type === 'warn') {
+      osc.frequency.setValueAtTime(660, ctx.currentTime);
+      osc.frequency.setValueAtTime(580, ctx.currentTime + 0.12);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.3);
+    } else {
+      osc.frequency.setValueAtTime(300, ctx.currentTime);
+      osc.frequency.setValueAtTime(200, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.4);
+    }
+  } catch(e) { /* audio not supported */ }
+}
+// Hook into showResult to trigger beep after scan
+const _showResultOrig = showResult;
+window._showResultHooked = true;
+const _showResultWithSound = function(raw) {
+  _showResultOrig(raw);
+  setTimeout(() => { if (lastResult) playBeepSound(lastResult.status); }, 150);
+};
+// Override only if not already overridden
+if (!window._showResultHooked) { showResult = _showResultWithSound; }
+
+/* ── 10. 3D PRODUCT SHOWCASE - mouse drag ── */
+(function init3dShowcase() {
+  const card = document.getElementById('showcase3d');
+  if (!card) return;
+  let isDragging = false, startX = 0, startY = 0, rotX = 8, rotY = 0;
+  function applyTransform() {
+    card.style.transform = `rotateY(${rotY}deg) rotateX(${rotX}deg)`;
+  }
+  card.addEventListener('mousedown', e => {
+    isDragging = true; startX = e.clientX; startY = e.clientY;
+    card.style.animation = 'none'; e.preventDefault();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - startX; const dy = e.clientY - startY;
+    rotY += dx * 0.5; rotX -= dy * 0.3;
+    rotX = Math.max(-35, Math.min(35, rotX));
+    startX = e.clientX; startY = e.clientY; applyTransform();
+  });
+  window.addEventListener('mouseup', () => { if (isDragging) { isDragging = false; card.style.animation = ''; } });
+  card.addEventListener('touchstart', e => {
+    isDragging = true; startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+    card.style.animation = 'none';
+  }, { passive: true });
+  card.addEventListener('touchmove', e => {
+    if (!isDragging) return;
+    const dx = e.touches[0].clientX - startX; const dy = e.touches[0].clientY - startY;
+    rotY += dx * 0.5; rotX -= dy * 0.3;
+    rotX = Math.max(-35, Math.min(35, rotX));
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY; applyTransform();
+  }, { passive: true });
+  card.addEventListener('touchend', () => { isDragging = false; card.style.animation = ''; });
+})();
+
+/* ==========================================
+   SIDEBAR FUNCTIONS
+========================================== */
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sideOverlay');
+  const btn = document.getElementById('hamburgerBtn');
+  const isOpen = sidebar.classList.contains('open');
+  if (isOpen) {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+    btn.classList.remove('open');
+  } else {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+    btn.classList.add('open');
+  }
+}
+function closeSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sideOverlay');
+  const btn = document.getElementById('hamburgerBtn');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('open');
+  btn.classList.remove('open');
+}
+// Close on Escape key
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSidebar(); });
+
+
 </script>
 </body>
 </html>
